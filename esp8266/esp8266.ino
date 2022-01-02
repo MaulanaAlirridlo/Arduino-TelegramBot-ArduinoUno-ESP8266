@@ -1,5 +1,6 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
 
 String data;
 char c;
@@ -7,9 +8,9 @@ char c;
 void setup() {
  
   Serial.begin(115200);
-  WiFi.begin("Net", "11111111");   //WiFi connection
+  WiFi.begin("Galaxy A52s 5G17E1", "izkz5374");
  
-  while (WiFi.status() != WL_CONNECTED) {  //Wait for the WiFI connection completion
+  while (WiFi.status() != WL_CONNECTED) {
  
     delay(500);
     Serial.println("Waiting for connection");
@@ -21,7 +22,7 @@ void setup() {
  
 void loop() {
  
-  if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
+  if (WiFi.status() == WL_CONNECTED) {
     while(Serial.available()>0){
     delay(10);
       c = Serial.read();
@@ -30,15 +31,20 @@ void loop() {
     if (data.length()>0) {
       HTTPClient http;
   
-      http.begin("http://192.168.43.152:8000/");
-      http.addHeader("Content-Type", "text/plain");
-      int httpCode = http.POST(data);              //Send the request
-      String payload = http.getString();           //Get the response payload
+      http.begin("http://47.254.240.15/");
+      http.addHeader("Content-Type", "application/json");
+      int httpCode = http.POST(data);
       delay(10);
       data = "";
 
       http.end();  //Close connection
+      delay(1000);
     }
+  } else {
+    delay(1000);
+    Serial.println("Reconnecting");
+    WiFi.disconnect();
+    WiFi.reconnect();
   }
   delay(100);
  
